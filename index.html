@@ -1,0 +1,917 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.4">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">import React, { useState } from 'react';</p>
+<p class="p1">import { MessageCircle, Plus, QrCode, Instagram, MapPin, Globe, Flag } from 'lucide-react';</p>
+<p class="p2"><br></p>
+<p class="p1">const BudsHelper = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [language, setLanguage] = useState('en');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [showAddForm, setShowAddForm] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [showQRCodes, setShowQRCodes] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [contentIdea, setContentIdea] = useState(null);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [generatingContent, setGeneratingContent] = useState(false);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [strains, setStrains] = useState([]);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [contentIdeasDB, setContentIdeasDB] = useState([]);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const translations = {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>en: {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>title: 'BudsHelper',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>subtitle: 'Cannabis Shop Assistant',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>contentGenerator: 'Generate Content Ideas',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>addNewWeed: 'Add New Weed',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showQRCodes: 'Show QR Codes',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>weedType: 'Weed Type',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>strainName: 'Strain Name',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>pricePerGram: 'Price per Gram (THB)',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>save: 'Save',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cancel: 'Cancel',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>indica: 'Indica',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sativa: 'Sativa',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>hybrid: 'Hybrid',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instagram: 'Instagram',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>googleMaps: 'Google Maps',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>followForFreeJoint: 'Follow us for a free joint!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>reviewForFreeJoint: 'Leave a review for a free joint!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>generating: 'Generating...',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>strainAdded: 'Strain added successfully!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fillAllFields: 'Please fill all fields',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>copyPostText: 'Copy Post Text',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>markAsReady: 'Mark as Ready',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>markAsBullshit: 'Mark as Bullshit',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>goal: 'GOAL',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>idea: 'IDEA',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>postText: 'POST TEXT'</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>th: {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>title: 'BudsHelper',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>subtitle: 'ผู้ช่วยร้านกัญชา',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>contentGenerator: 'สร้างไอเดียคอนเทนต์',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>addNewWeed: 'เพิ่มกัญชาใหม่',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showQRCodes: 'แสดง QR Code',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>weedType: 'ประเภทกัญชา',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>strainName: 'ชื่อสายพันธุ์',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>pricePerGram: 'ราคาต่อกรัม (บาท)',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>save: 'บันทึก',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cancel: 'ยกเลิก',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>indica: 'อินดิก้า',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sativa: 'ซาติวา',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>hybrid: 'ไฮบริด',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instagram: 'อินสตาแกรม',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>googleMaps: 'Google Maps',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>followForFreeJoint: 'ติดตามเราเพื่อรับจอยท์ฟรี!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>reviewForFreeJoint: 'ให้คะแนนเพื่อรับจอยท์ฟรี!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>generating: 'กำลังสร้าง...',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>strainAdded: 'เพิ่มสายพันธุ์เรียบร้อย!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fillAllFields: 'กรุณากรอกข้อมูลให้ครบ',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>copyPostText: 'คัดลอกข้อความโพสต์',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>markAsReady: 'ทำเครื่องหมายเป็นพร้อม',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>markAsBullshit: 'ทำเครื่องหมายเป็นเหลวไหล',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>goal: 'เป้าหมาย',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>idea: 'ไอเดีย',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>postText: 'ข้อความโพสต์'</p>
+<p class="p1"><span class="Apple-converted-space">    </span>},</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ru: {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>title: 'BudsHelper',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>subtitle: 'Помощник магазина каннабиса',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>contentGenerator: 'Генерировать идеи контента',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>addNewWeed: 'Добавить новый сорт',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>showQRCodes: 'Показать QR коды',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>weedType: 'Тип каннабиса',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>strainName: 'Название сорта',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>pricePerGram: 'Цена за грамм (THB)',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>save: 'Сохранить',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cancel: 'Отмена',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>indica: 'Индика',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sativa: 'Сатива',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>hybrid: 'Гибрид',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>instagram: 'Инстаграм',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>googleMaps: 'Google Карты',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>followForFreeJoint: 'Подпишись на нас за бесплатный джойнт!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>reviewForFreeJoint: 'Оставь отзыв за бесплатный джойнт!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>generating: 'Генерируется...',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>strainAdded: 'Сорт успешно добавлен!',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>fillAllFields: 'Пожалуйста, заполните все поля',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>copyPostText: 'Скопировать текст поста',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>markAsReady: 'Отметить как готово',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>markAsBullshit: 'Отметить как фигня',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>goal: 'ЦЕЛЬ',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>idea: 'ИДЕЯ',</p>
+<p class="p1"><span class="Apple-converted-space">      </span>postText: 'ТЕКСТ ПОСТА'</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const t = translations[language];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const [newStrain, setNewStrain] = useState({</p>
+<p class="p1"><span class="Apple-converted-space">    </span>type: 'indica',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>name: '',</p>
+<p class="p1"><span class="Apple-converted-space">    </span>price: ''</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Function to translate content</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const translateContent = (text, language) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const contentTranslations = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Ideas translations - key ones</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"A joint on the table with Buds logo in background": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "จอยท์บนโต๊ะกับโลโก้ Buds ในพื้นหลัง",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Джойнт на столе с логотипом Buds"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Pouring a cup of iced coffee at the bar": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "เทกาแฟเย็นที่บาร์",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Наливание холодного кофе за баром"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Entrance of the shop from the street": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "ทางเข้าร้านจากถนน",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Вход в магазин с улицы"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Close-up of the hydro buds": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "ภาพใกล้ของดอกไฮโดร",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Крупный план гидропонных шишек"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Someone rolling a joint at the station": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "คนม้วนจอยท์ที่สถานี",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Скручивание джойнта на станции"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Bong and vape gear on the table": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "บอนส์และอุปกรณ์เวปบนโต๊ะ",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Бонг и вейп на столе"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Interior details: lamp, plant, wood wall": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "รายละเอียดภายใน: โคมไฟ, ต้นไม้, ผนังไม้",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Детали интерьера: лампа, растение, стена"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Menu board or menu in hand": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "กระดานเมนูหรือเมนูในมือ",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Доска меню или меню в руке"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Happy guest laughing or chilling (with permission)": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "แขกมีความสุข (ขออนุญาต)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Счастливый гость (с разрешения)"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Shelf with jars labeled by strain": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "ชั้นวางขวดที่มีป้ายสายพันธุ์",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Полка с банками и названиями сортов"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Goals translations - key ones</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Highlight product vibe": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "เน้นบรรยากาศของผลิตภัณฑ์",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Подчеркнуть атмосферу продукта"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Show atmosphere": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "แสดงบรรยากาศ",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Показать атмосферу"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Navigation / engagement": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "นำทาง / มีส่วนร่วม",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Навигация / взаимодействие"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Highlight product quality": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "เน้นคุณภาพของผลิตภัณฑ์",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Подчеркнуть качество продукта"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Show convenience": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "แสดงความสะดวก",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Показать удобство"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Promote experience": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "ส่งเสริมประสบการณ์",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Продвигать опыт"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Create aesthetic": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "สร้างความสวยงาม",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Создать эстетику"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Promote food &amp; drinks": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "ส่งเสริมอาหารและเครื่องดื่ม",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Продвигать еду и напитки"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Social proof": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "หลักฐานทางสังคม",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Социальное подтверждение"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"Educate on variety": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "ให้ความรู้เรื่องความหลากหลาย",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "Образование о разнообразии"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Tips translations - all 100 tips</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Place joint at 45° angle, logo slightly blurred in background, warm lighting": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: วางจอยท์เอียง 45°, โลโก้เบลอ, แสงอบอุ่น",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Джойнт под углом 45°, размытый логотип, теплый свет"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Slow motion pour, steam visible, satisfying sound, 3-5 seconds": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: เทช้า, เห็นไอน้ำ, เสียงดี, 3-5 วินาที",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Замедленное наливание, пар, звук, 3-5 сек"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Shoot from across the street, include 'OPEN' sign, capture foot traffic": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: ถ่ายจากฝั่งตรงข้าม, รวมป้าย 'เปิด', จับคนเดิน",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Съемка с противоположной стороны, знак 'ОТКРЫТО'"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Use macro lens, natural light, show trichomes, contrasting background": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: เลนส์แมโคร, แสงธรรมชาติ, แสดงไตรโครม",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Макро объектив, естественный свет, трихомы"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Time-lapse 10-15 seconds, show full process, steady hands, clean workspace": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: ไทม์แลปส์ 10-15 วินาที, แสดงกระบวนการ, มือมั่นคง",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Таймлапс 10-15 сек, весь процесс, твердые руки"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Clean glass, arrange aesthetically, add soft lighting, include flowers": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: แก้วสะอาด, จัดสวย, แสงนุ่ม, ใส่ดอกไม้",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Чистое стекло, эстетично, мягкий свет, цветы"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Focus on textures, warm tones, rule of thirds, cozy atmosphere": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: เน้นพื้นผิว, โทนอบอุ่น, กฎสามส่วน",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Фокус на текстуры, теплые тона, правило третей"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Good lighting on text, hands holding menu, show variety, clean presentation": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: แสงดีบนข้อความ, มือถือเมนู, แสดงหลากหลาย",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Хорошее освещение текста, руки с меню, разнообразие"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Candid moments, natural audio, good lighting, genuine reactions": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: ช่วงเวลาจริง, เสียงธรรมชาติ, แสงดี",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Естественные моменты, натуральный звук, хороший свет"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Organize by color/size, clear labels visible, even lighting across shelf": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: จัดตามสี/ขนาด, ป้ายชัด, แสงเท่ากัน",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Организация по цвету/размеру, четкие этикетки"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Focus on authenticity, good lighting, clean composition": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: เน้นความจริง, แสงดี, องค์ประกอบสะอาด",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Фокус на подлинность, хорошее освещение"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Keep 5-15 seconds, steady shots, good lighting, authentic moments": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: 5-15 วินาที, ภาพมั่นคง, แสงดี",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: 5-15 секунд, стабильные кадры, хороший свет"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Abbreviated version for performance - adding key generic tips that cover most cases</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Natural lighting, model relaxed, show logo clearly, lifestyle approach": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: แสงธรรมชาติ, นางแบบผ่อนคลาย, โลโก้ชัด",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Естественное освещение, расслабленная модель, четкий логотип"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Clear text, good contrast, frame completely, readable fonts": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: ข้อความชัด, ความต่างชัดดี, เฟรมครบ",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Четкий текст, хороший контраст, полный кадр"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Wide angle, show seating, natural light, inviting atmosphere": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: มุมกว้าง, แสดงที่นั่ง, แสงธรรมชาติ",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Широкий угол, места для сидения, естественный свет"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: Macro shot, capture grinding motion, show texture, good lighting": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: ภาพแมโคร, จับการบด, แสดงพื้นผิว",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Макро снимок, движение измельчения, текстура"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>"💡 Tip: 120fps minimum, dramatic lighting, focus on flame, 3-4 seconds": {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>th: "💡 คำแนะนำ: อย่างน้อย 120fps, แสงดราม่า, เน้นเปลวไฟ",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ru: "💡 Совет: Минимум 120fps, драматичное освещение, фокус на пламени"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (language === 'en') return text;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return contentTranslations[text] &amp;&amp; contentTranslations[text][language] ? contentTranslations[text][language] : text;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Hashtags database from CSV</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const hashtagsDB = {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>jomtien: ["#jomtien", "#jomtienbeach", "#jomtienpattaya", "#jomtienlife", "#jomtiencafe"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>pattaya: ["#pattaya", "#pattayathailand", "#pattayalife", "#pattayacafe", "#pattayastyle"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>digitalNomads: ["#expatinthailand", "#pattayaexpat", "#digitalnomadthailand", "#coworkthailand"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>other: ["#chillspotpattaya", "#coffeebreakpattaya", "#cannabiscafethailand", "#budshousepattaya"],</p>
+<p class="p1"><span class="Apple-converted-space">    </span>weed: ["#420pattaya", "#pattaya420", "#pattayaflower", "#jomtienweed", "#hydroponics"]</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Function to generate relevant hashtags based on content</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const generateRelevantHashtags = (idea, goal, exampleText) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const allHashtags = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const content = `${idea} ${goal} ${exampleText}`.toLowerCase();</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Always add core location tags</p>
+<p class="p1"><span class="Apple-converted-space">    </span>allHashtags.push(...hashtagsDB.pattaya.slice(0, 2));</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Add weed-related tags</p>
+<p class="p1"><span class="Apple-converted-space">    </span>allHashtags.push(...hashtagsDB.weed.slice(0, 2));</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Context-based hashtag selection</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (content.includes('coffee') || content.includes('cafe')) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>allHashtags.push("#pattayacafe", "#coffeebreakpattaya");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (content.includes('chill') || content.includes('relax')) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>allHashtags.push("#chillspotpattaya");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Remove duplicates and limit</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const uniqueHashtags = [...new Set(allHashtags)];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>return uniqueHashtags.slice(0, 6).join(' ');</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Function to generate implementation tips for all 100 ideas</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const generateImplementationTip = (idea, contentType, id) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Create specific tips based on idea ID for precise matching</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const tipsByID = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>1: "💡 Tip: Place joint at 45° angle, logo slightly blurred in background, warm lighting",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>2: "💡 Tip: Slow motion pour, steam visible, satisfying sound, 3-5 seconds",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>3: "💡 Tip: Shoot from across the street, include 'OPEN' sign, capture foot traffic",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>4: "💡 Tip: Use macro lens, natural light, show trichomes, contrasting background",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>5: "💡 Tip: Time-lapse 10-15 seconds, show full process, steady hands, clean workspace",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>6: "💡 Tip: Clean glass, arrange aesthetically, add soft lighting, include flowers",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>7: "💡 Tip: Focus on textures, warm tones, rule of thirds, cozy atmosphere",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>8: "💡 Tip: Good lighting on text, hands holding menu, show variety, clean presentation",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>9: "💡 Tip: Candid moments, natural audio, good lighting, genuine reactions",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>10: "💡 Tip: Organize by color/size, clear labels visible, even lighting across shelf",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>11: "💡 Tip: Angle for readability, good contrast, include branded elements",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>12: "💡 Tip: Dark background, side lighting, capture vapor density, timing is key",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>13: "💡 Tip: Focus on technique, steam sounds, latte art, professional movements",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>14: "💡 Tip: Natural pose, soft lighting, peaceful atmosphere, include reading material",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>15: "💡 Tip: Flat lay angle, natural lighting, clean surfaces, lifestyle props",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>16: "💡 Tip: Golden hour timing, ambient audio, slow pan, relaxed atmosphere",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>17: "💡 Tip: Arrange in triangle, show textures, include rolling papers, good lighting",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>18: "💡 Tip: Candid action shots, good lighting, show professionalism, clean environment",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>19: "💡 Tip: Clear jar labels, steady movement, good lighting, educational pace",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>20: "💡 Tip: Focus on hands, show process, warm lighting, include tools nearby",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>21: "💡 Tip: Capture connection, genuine smiles, good timing, positive energy",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>22: "💡 Tip: Natural lighting, model relaxed, show logo clearly, lifestyle approach",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>23: "💡 Tip: Clear text, good contrast, frame completely, readable fonts",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>24: "💡 Tip: Bright colors, clear pricing, eye-catching layout, include product",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>25: "💡 Tip: Wide angle, show seating, natural light, inviting atmosphere",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>26: "💡 Tip: Macro shot, capture grinding motion, show texture, good lighting",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>27: "💡 Tip: Over-shoulder angle, show creative process, include cannabis elements",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>28: "💡 Tip: Split screen setup, clear options, engaging text overlay, 5-10 seconds",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>29: "💡 Tip: Arrange products aesthetically, good lighting, show branding clearly",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>30: "💡 Tip: Ensure scannability, good contrast, include call-to-action text",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>31: "💡 Tip: Equal lighting, clear differences, labels visible, educational angle",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>32: "💡 Tip: 120fps minimum, dramatic lighting, focus on flame, 3-4 seconds",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>33: "💡 Tip: Macro focus, show texture detail, natural lighting, honest portrayal",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>34: "💡 Tip: Overhead angle, interesting shadows, warm lighting, artistic composition",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>35: "💡 Tip: Sync movements, celebration mood, good audio, multiple angles",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>36: "💡 Tip: Close-up focus, show contents clearly, good lighting, appetizing angle",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>37: "💡 Tip: Capture genuine emotion, soft lighting, peaceful expression, intimate moment",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>38: "💡 Tip: Smooth movement, even lighting, show variety, 8-10 seconds",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>39: "💡 Tip: Morning setup, natural light, casual arrangement, breakfast vibes",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>40: "💡 Tip: Candid interaction, team spirit, good timing, positive energy",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>41: "💡 Tip: Close-up on hands, show creativity, include art supplies, warm lighting",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>42: "💡 Tip: Clear signage, mood lighting, educational setup, color coordination",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>43: "💡 Tip: Macro lens, steady zoom, good lighting, show sparkle, educational",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>44: "💡 Tip: Food styling, appetizing angle, good lighting, color contrast",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>45: "💡 Tip: Hand-written style, good lighting, inspirational setup, readable text",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>46: "💡 Tip: Before/after setup, clean workspace, good lighting, care demonstrated",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>47: "💡 Tip: Natural window light, golden hour, jar positioning, warm atmosphere",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>48: "💡 Tip: Interactive format, clear differences, engagement hook, 10-15 seconds",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>49: "💡 Tip: Bright colors, happy mood, good lighting, positive energy",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>50: "💡 Tip: Creative process, artistic angle, good lighting, playful mood",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>51: "💡 Tip: Before/after comparison, satisfying cleaning sounds, clear difference",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>52: "💡 Tip: Morning light, cozy setup, newspaper readable, peaceful atmosphere",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>53: "💡 Tip: Personal touch, close-up on writing, good lighting, service focus",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>54: "💡 Tip: Creative perspective, clear path, good lighting, inviting mood",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>55: "💡 Tip: Spotlight effect, hero product, dramatic lighting, premium feel",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>56: "💡 Tip: Humor focus, readable text, good lighting, relatable content",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>57: "💡 Tip: Natural movement, good audio sync, relaxed vibe, authentic feel",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>58: "💡 Tip: Mindful setup, calm lighting, peaceful atmosphere, zen vibes",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>59: "💡 Tip: Casual display, good lighting, show design clearly, lifestyle context",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>60: "💡 Tip: Genuine emotion, good audio, authentic moment, grateful expression",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>61: "💡 Tip: Macro focus, capture aroma visually, good lighting, sensory appeal",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>62: "💡 Tip: Pet-friendly angle, natural light, cute factor, welcoming atmosphere",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>63: "💡 Tip: Brand detail focus, macro shot, good lighting, premium feel",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>64: "💡 Tip: Authentic detail, natural lighting, real-life evidence, relatable",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>65: "💡 Tip: Window perspective, natural light, scenic view, atmospheric mood",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>66: "💡 Tip: Product lineup, even lighting, organized display, variety showcase",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>67: "💡 Tip: Educational setup, clear text, good lighting, informative angle",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>68: "💡 Tip: Action shot, chalk texture, good lighting, fresh update vibe",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>69: "💡 Tip: Rhythm focus, audio sync, close-up hands, musical mood",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>70: "💡 Tip: Happy details, bright lighting, positive mood, brand personality",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>71: "💡 Tip: Cultural fusion, appetizing angle, good lighting, local pride",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>72: "💡 Tip: LED effects, dramatic lighting, night atmosphere, cool vibes",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>73: "💡 Tip: Creative filter, smoke effect, artistic angle, brand integration",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>74: "💡 Tip: Personal moment, good lighting, emotional connection, community feel",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>75: "💡 Tip: Latte art focus, steam capture, warm lighting, artistic presentation",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>76: "💡 Tip: Organized layout, good lighting, premium materials, preparation focus",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>77: "💡 Tip: Street style, natural lighting, casual vibe, lifestyle integration",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>78: "💡 Tip: Thoughtful expression, natural lighting, decision moment, relatable",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>79: "💡 Tip: Clean setup, fresh details, good lighting, care attention",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>80: "💡 Tip: Social moment, good timing, friendship vibe, celebration mood",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>81: "💡 Tip: Trust signal, clear labeling, good lighting, recommendation focus",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>82: "💡 Tip: Clear signage, welcoming atmosphere, good lighting, zone definition",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>83: "💡 Tip: Morning ritual, natural light, healthy lifestyle, routine focus",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>84: "💡 Tip: Artistic reflection, creative angle, good lighting, trippy effect",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>85: "💡 Tip: Fun interaction, playful mood, good timing, game spirit",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>86: "💡 Tip: Brand storytelling, detail focus, good lighting, lifestyle integration",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>87: "💡 Tip: Team candid, natural interaction, good lighting, behind-scenes",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>88: "💡 Tip: Curiosity hook, clear labeling, good lighting, playful restriction",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>89: "💡 Tip: Variety display, organized layout, good lighting, educational setup",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>90: "💡 Tip: Slow motion, peaceful expression, good lighting, zen moment",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>91: "💡 Tip: Tropical aesthetic, shadow play, natural light, location pride",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>92: "💡 Tip: Genuine smile, natural lighting, authentic moment, relatable joy",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>93: "💡 Tip: Blissful expression, golden hour, peaceful mood, meditation vibe",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>94: "💡 Tip: Playful gesture, good timing, celebratory mood, ritual fun",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>95: "💡 Tip: Macro detail, audio focus, cooling effect, refreshing mood",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>96: "💡 Tip: Color arrangement, artistic layout, good lighting, rainbow effect",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>97: "💡 Tip: Street style, youth appeal, good lighting, lifestyle integration",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>98: "💡 Tip: Tension moment, macro focus, dramatic lighting, anticipation build",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>99: "💡 Tip: Retro filter, nostalgic mood, vintage aesthetic, throwback vibe",</p>
+<p class="p1"><span class="Apple-converted-space">      </span>100: "💡 Tip: Daily recommendation, mood matching, good lighting, personalization"</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>return tipsByID[id] || "💡 Tip: Focus on authenticity, good lighting, clean composition";</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>// Content ideas database - ALL 100+ ideas from Google Doc</p>
+<p class="p1"><span class="Apple-converted-space">  </span>React.useEffect(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setContentIdeasDB([</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Original 30 ideas</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 1, status: "Not Started", contentType: "Photo", goal: "Highlight product vibe", idea: "A joint on the table with Buds logo in background", exampleText: "Start your chill right 🌿", tags: "#chill #joint #buds"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 2, status: "Not Started", contentType: "Video", goal: "Show atmosphere", idea: "Pouring a cup of iced coffee at the bar", exampleText: "Coffee time ☕ + green time 🌿", tags: "#coffeebreak #pattaya"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 3, status: "Not Started", contentType: "Photo", goal: "Navigation / engagement", idea: "Entrance of the shop from the street", exampleText: "We're open! Come chill 😎", tags: "#location #open"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 4, status: "Not Started", contentType: "Photo", goal: "Highlight product quality", idea: "Close-up of the hydro buds", exampleText: "30+ strains. Clean. Pure. 🔥", tags: "#weedporn #hydroponic"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 5, status: "Not Started", contentType: "Video", goal: "Show convenience", idea: "Someone rolling a joint at the station", exampleText: "Rolling station always ready 🌀", tags: "#rolling #station #pattayaweed"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 6, status: "Not Started", contentType: "Photo", goal: "Promote experience", idea: "Bong and vape gear on the table", exampleText: "Your tools are ready 😌", tags: "#bonglife #vapelife"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 7, status: "Not Started", contentType: "Photo", goal: "Create aesthetic", idea: "Interior details: lamp, plant, wood wall", exampleText: "Details matter. Feel the vibe 💚", tags: "#cozyspot #budsstyle"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 8, status: "Not Started", contentType: "Photo", goal: "Promote food &amp; drinks", idea: "Menu board or menu in hand", exampleText: "Fresh croissant + iced coffee? Yes please!", tags: "#snacks #weedfriendly"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 9, status: "Not Started", contentType: "Video", goal: "Social proof", idea: "Happy guest laughing or chilling (with permission)", exampleText: "This is your Buds House 💚", tags: "#budscrew #happyvibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 10, status: "Not Started", contentType: "Photo", goal: "Educate on variety", idea: "Shelf with jars labeled by strain", exampleText: "Pick your flavor 🌈", tags: "#cannabisstrains #thailandweed"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 11, status: "Not Started", contentType: "Photo", goal: "Brand voice", idea: "Sticker or sign with Buds philosophy", exampleText: "Respect the plant 🌿", tags: "#mindfulsmoking #budsvalues"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 12, status: "Not Started", contentType: "Photo", goal: "Promote quality gear", idea: "Close-up of vapor clouds", exampleText: "Clean hits only 🌬", tags: "#vapeclouds #smoothsmoke"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 13, status: "Not Started", contentType: "Video", goal: "Show service variety", idea: "Barista making a latte", exampleText: "We do more than weed ☕", tags: "#coffeelover #budslife"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 14, status: "Not Started", contentType: "Photo", goal: "Highlight relaxation", idea: "Guest reading or journaling", exampleText: "Peace. Plants. Presence.", tags: "#stonerpeace #pattayachill"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 15, status: "Not Started", contentType: "Photo", goal: "Daily lifestyle", idea: "Ashtray with half-joint &amp; coffee cup", exampleText: "Break time. You earned it 💨", tags: "#weedbreak #relaxspot"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 16, status: "Not Started", contentType: "Video", goal: "Mood building", idea: "Music playing, chill scene at sunset", exampleText: "Golden hour hits different ✨", tags: "#sunsetvibes #pattayaevening"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 17, status: "Not Started", contentType: "Photo", goal: "Product setup", idea: "Bag of weed + grinder + lighter", exampleText: "Your kit is waiting 🔥", tags: "#cannabiskit #420ready"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 18, status: "Not Started", contentType: "Photo", goal: "Reassure cleanliness", idea: "Staff cleaning or prepping", exampleText: "We keep it clean and comfy 🧼", tags: "#cleanplace #weedcafe"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 19, status: "Not Started", contentType: "Video", goal: "Strain guidance", idea: "Flip through different strains visually", exampleText: "Too many choices? We'll help you 🌿", tags: "#weedmenu #budshelp"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 20, status: "Not Started", contentType: "Photo", goal: "Invite interaction", idea: "Guest rolling or packing a bowl", exampleText: "What's your ritual?", tags: "#jointtime #yourway"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 21, status: "Not Started", contentType: "Video", goal: "Community feel", idea: "High-five between staff and guest", exampleText: "You're always welcome here ✋", tags: "#friendlyvibes #budsteam"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 22, status: "Ready", contentType: "Photo", goal: "Soft promo", idea: "Cool T-shirt or merch", exampleText: "What do you think about this one? (AI tshirt)", tags: "#budsmerch #pattayastore"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 23, status: "Not Started", contentType: "Photo", goal: "Add humor", idea: "Funny weed-related sign in the shop", exampleText: "True or false? 😂", tags: "#stonertruth #weedlol"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 24, status: "Not Started", contentType: "Photo", goal: "Sales push", idea: "Daily weed deal sign (if any)", exampleText: "Today's special is calling you 🔔", tags: "#weeddeal #todayspick"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 25, status: "Not Started", contentType: "Photo", goal: "Show space", idea: "Backyard or smoking area", exampleText: "Out back is where the magic happens 🌿", tags: "#hiddenvibes #smokezone"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 26, status: "Not Started", contentType: "Photo", goal: "Tactile appeal", idea: "Close-up on grinder action", exampleText: "Freshly ground = best taste 👃", tags: "#grindtime #smellcheck"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 27, status: "Not Started", contentType: "Photo", goal: "Inspire creators", idea: "Guest drawing or creating art", exampleText: "Cannabis = Creativity 🎨", tags: "#highart #weedandcreate"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 28, status: "Not Started", contentType: "Video", goal: "Engagement", idea: "Story poll: 'Joint or Bong?'", exampleText: "Choose your weapon 💥", tags: "#weedpoll #budsfun"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 29, status: "Not Started", contentType: "Photo", goal: "Merchandising", idea: "Shelf with Buds House mugs or jars", exampleText: "Take a piece of us home 🏡", tags: "#souvenir #budsstyle"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 30, status: "Not Started", contentType: "Photo", goal: "Drive following", idea: "QR code to Instagram on counter", exampleText: "Follow us for good stuff 👉", tags: "#budslove #followbuds"},</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Additional 70+ ideas from Google Doc</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 31, status: "Not Started", contentType: "Photo", goal: "Education + interaction", idea: "Two different buds side by side", exampleText: "Can you guess which one's indica? 👀", tags: "#strainquiz #weedtrivia"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 32, status: "Not Started", contentType: "Video", goal: "Cool visual + product", idea: "Guest lighting a joint in slow-mo", exampleText: "Slo-mo magic 🔥", tags: "#slowmotion #jointvibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 33, status: "Not Started", contentType: "Photo", goal: "Tactile appeal", idea: "Close-up of sticky fingers after breaking a nug", exampleText: "Sticky = good 😏", tags: "#stickybuds #goodweed"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 34, status: "Not Started", contentType: "Photo", goal: "Artistic / aesthetic", idea: "Coffee with joint shadow on the table", exampleText: "Double shadow play ☕🌿", tags: "#weedlight #budsart"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 35, status: "Not Started", contentType: "Video", goal: "Vibe building", idea: "Flip cup of iced coffee + cheers with joint", exampleText: "Cheers to chill 🥂", tags: "#weedtogether #pattayavibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 36, status: "Not Started", contentType: "Photo", goal: "Call to action", idea: "Someone holding open a grinder full of weed", exampleText: "Ready to roll? 🌀", tags: "#grinderloaded #budsready"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 37, status: "Not Started", contentType: "Photo", goal: "Emotional connection", idea: "Guest with eyes closed enjoying a hit", exampleText: "Feel it. Love it. Buds 💚", tags: "#stonermoment #budsfeels"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 38, status: "Not Started", contentType: "Video", goal: "Show variety", idea: "Pan shot across full bud jar shelf", exampleText: "Which one's calling your name?", tags: "#weedchoice #strainheaven"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 39, status: "Not Started", contentType: "Photo", goal: "Lifestyle + humor", idea: "Ashtray with joint ends + coffee spoon", exampleText: "Balanced breakfast 😄", tags: "#wakeandbake #budsbreakfast"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 40, status: "Not Started", contentType: "Photo", goal: "Team pride", idea: "Barista + budtender doing fist bump", exampleText: "Best team in Pattaya ✊", tags: "#budscrew #pattayapeople"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 41, status: "Not Started", contentType: "Photo", goal: "Inspire creativity", idea: "Drawing on napkin or receipt", exampleText: "Art happens here 🎨", tags: "#napkinart #weedinspired"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 42, status: "Not Started", contentType: "Photo", goal: "Strain education", idea: "Strain name sign + mood (e.g. 'Zkittlez = relax')", exampleText: "Pick your mood 🌈", tags: "#weedmoods #strainmatch"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 43, status: "Not Started", contentType: "Video", goal: "Highlight quality", idea: "Zoom into terpene crystals under light", exampleText: "That sparkle tho ✨", tags: "#trichomes #weedmacro"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 44, status: "Not Started", contentType: "Photo", goal: "Sell dessert + weed", idea: "Melted chocolate dessert + pre-roll", exampleText: "Treat yourself 🍫🌿", tags: "#weedpairing #stonersnack"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 45, status: "Not Started", contentType: "Photo", goal: "Daily vibe", idea: "Quote of the day written on board", exampleText: "\"Inhale the good 💨\"", tags: "#quoteofthehigh #weedthoughts"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 46, status: "Not Started", contentType: "Photo", goal: "Product care", idea: "Someone cleaning their pipe", exampleText: "Love your tools 💚", tags: "#stonercleaning #budslife"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 47, status: "Not Started", contentType: "Photo", goal: "Natural aesthetics", idea: "Sunlight beaming on weed jar", exampleText: "Nature's spotlight 🌞", tags: "#weedlight #sunshinevibe"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 48, status: "Not Started", contentType: "Video", goal: "Interactive story", idea: "Story quiz: 'Guess the strain by color'", exampleText: "Pop quiz! 🎯", tags: "#strainquiz #weedfun"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 49, status: "Not Started", contentType: "Photo", goal: "Fun &amp; friendly", idea: "A smiley sticker on a bud jar", exampleText: "We love our job 😄", tags: "#budsenergy #happyplace"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 50, status: "Not Started", contentType: "Photo", goal: "Personal touch", idea: "Someone doodling on rolling paper pack", exampleText: "Bored? Draw and roll 🎨🌀", tags: "#weedart #creativebreak"},</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Continue with more ideas...</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 51, status: "Not Started", contentType: "Video", goal: "Practical reminder", idea: "Before/after cleaning bongs", exampleText: "Squeaky clean 🫧", tags: "#cleanbong #freshhits"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 52, status: "Not Started", contentType: "Photo", goal: "Cozy &amp; classic morning", idea: "Coffee cup next to morning newspaper", exampleText: "Wake. Bake. Read. 🗞", tags: "#budsbreakfast #slowmorning"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 53, status: "Not Started", contentType: "Photo", goal: "Service highlight", idea: "Bartender writing customer name on cup", exampleText: "Personalized for you ☕", tags: "#budsbar #cannacafe"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 54, status: "Not Started", contentType: "Photo", goal: "Lead to shop", idea: "Footprints leading to Buds sign", exampleText: "Follow the vibe 👣", tags: "#budspath #findus"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 55, status: "Not Started", contentType: "Photo", goal: "Product highlight", idea: "Strain of the week in a spotlight", exampleText: "She's the star 🌟", tags: "#strainoftheweek #weedqueen"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 56, status: "Not Started", contentType: "Photo", goal: "Humor &amp; sharing", idea: "Funny stoner meme on printed paper", exampleText: "Just facts 😂", tags: "#weedmemes #budsfun"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 57, status: "Not Started", contentType: "Video", goal: "Mood setting", idea: "Guest dancing subtly to chill music", exampleText: "You feel it too? 🎶", tags: "#stonergroove #budsbeats"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 58, status: "Not Started", contentType: "Photo", goal: "Mindfulness", idea: "Mini sign on table: 'Take a deep breath'", exampleText: "Yes. Right now. Inhale 💨", tags: "#weedzen #mindfulmoments"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 59, status: "Not Started", contentType: "Photo", goal: "Merch soft promo", idea: "T-shirt on hanger in corner", exampleText: "Would you rock this?", tags: "#budswear #pattayamerch"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 60, status: "Not Started", contentType: "Video", goal: "Authenticity", idea: "Guest saying 'Thank you Buds!' to camera", exampleText: "This is what we live for 💚", tags: "#realguests #thanksbuds"},</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Even more ideas to reach 100+</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 61, status: "Not Started", contentType: "Photo", goal: "Sensory tease", idea: "Freshly opened jar with strong smell", exampleText: "You can almost smell this through the screen 👃", tags: "#aromatherapy #weedjar"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 62, status: "Not Started", contentType: "Photo", goal: "Feel-good content", idea: "Cute dog near entrance (if possible)", exampleText: "Stoner-friendly pups welcome 🐾", tags: "#budsanddogs #weedfriendly"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 63, status: "Not Started", contentType: "Photo", goal: "Brand detail", idea: "Close-up of lighter with Buds logo", exampleText: "Small things, big vibes 🔥", tags: "#budsgear #lightershot"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 64, status: "Not Started", contentType: "Photo", goal: "Relatable realism", idea: "Used coffee cup with lipstick mark", exampleText: "Proof of chill moments ☕💋", tags: "#cannacafe #budsvibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 65, status: "Not Started", contentType: "Photo", goal: "Mood setting", idea: "View from outside the window", exampleText: "What a view to light up with 🌅", tags: "#viewsandvibes #chillscene"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 66, status: "Not Started", contentType: "Photo", goal: "Gear highlight", idea: "Shelf with grinders lined up", exampleText: "Grind it your way 🌀", tags: "#grinderlineup #budsgear"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 67, status: "Not Started", contentType: "Photo", goal: "Educate about product", idea: "Strain card next to bud sample", exampleText: "Let's get to know her 💬", tags: "#straincard #weedfacts"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 68, status: "Not Started", contentType: "Photo", goal: "Fresh drop", idea: "Someone drawing strain names on chalkboard", exampleText: "Fresh batch coming in 💥", tags: "#strainupdate #newdrop"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 69, status: "Not Started", contentType: "Video", goal: "Atmosphere", idea: "Tapping fingers to music beat on table", exampleText: "Feel the rhythm 🌊", tags: "#budsbeat #stonergroove"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 70, status: "Not Started", contentType: "Photo", goal: "Friendly brand feel", idea: "Cup sleeve with smiley face", exampleText: "Little things that make your day ☺️", tags: "#budshappy #coffeeculture"},</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Final 30 ideas</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 71, status: "Not Started", contentType: "Photo", goal: "Culture fusion", idea: "Classic Thai dish + joint combo", exampleText: "Local taste, high style 🇹🇭", tags: "#thaifood #weedpairing"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 72, status: "Not Started", contentType: "Photo", goal: "Night vibe", idea: "Bong with LED lighting at night", exampleText: "The glow-up is real 💡", tags: "#bongnight #stonestyle"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 73, status: "Not Started", contentType: "Photo", goal: "Brand play", idea: "Writing 'Buds' in smoke cloud filter", exampleText: "We're in the air 💨", tags: "#weedclouds #budsvisual"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 74, status: "Not Started", contentType: "Video", goal: "Community connection", idea: "Guest writing 'Buds' in guestbook", exampleText: "Your story matters 📝", tags: "#budsbook #youarebuds"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 75, status: "Not Started", contentType: "Photo", goal: "Coffee aesthetic", idea: "Cup with steam heart shape (latte)", exampleText: "Made with love 💚", tags: "#latteart #budslove"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 76, status: "Not Started", contentType: "Photo", goal: "Smoking prep", idea: "Marble tray with papers, filter tips", exampleText: "Ready, steady, roll ✂️", tags: "#rollingtools #budsessentials"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 77, status: "Not Started", contentType: "Photo", goal: "Lifestyle vibe", idea: "Back pocket with joint half-visible", exampleText: "Out &amp; about 🍃", tags: "#streetstoner #pattayachill"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 78, status: "Not Started", contentType: "Photo", goal: "Human moment", idea: "Guest looking at menu thoughtfully", exampleText: "So many choices, so little time 🤔", tags: "#menuvibes #weeddecision"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 79, status: "Not Started", contentType: "Photo", goal: "Clean + comfortable", idea: "Clean ashtray next to chilled water", exampleText: "Details we care about 💧", tags: "#weedetiquette #refreshingvibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 80, status: "Not Started", contentType: "Video", goal: "Social bonding", idea: "Cup clink between 2 guests", exampleText: "Cheers to new friends 🥂", tags: "#budsmeet #pattayapeople"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 81, status: "Not Started", contentType: "Photo", goal: "Trust &amp; suggestion", idea: "Favorite strain labeled 'staff pick'", exampleText: "Buds Crew loves this one 🔥", tags: "#stafffavorite #weedsuggest"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 82, status: "Not Started", contentType: "Photo", goal: "Reinforce vibe", idea: "Sign that says 'Chill Zone'", exampleText: "Yes, you're here 😌", tags: "#chillzone #budsplace"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 83, status: "Not Started", contentType: "Photo", goal: "Lifestyle/rituals", idea: "Someone stretching outside with coffee &amp; joint", exampleText: "Morning routine unlocked ☕🌿", tags: "#highmorning #slowstart"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 84, status: "Not Started", contentType: "Photo", goal: "Artsy stoner content", idea: "Cloud reflection in bong water", exampleText: "Trippy little things 💧", tags: "#bongreflection #weedvisuals"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 85, status: "Not Started", contentType: "Photo", goal: "Fun/light humor", idea: "Hands doing paper-rock-scissors over last nug", exampleText: "The fairest way 😄", tags: "#weedgames #budsfun"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 86, status: "Not Started", contentType: "Photo", goal: "Aesthetic detail", idea: "Mug and joint sitting on Buds coaster", exampleText: "Details tell the story ☕🌿", tags: "#budsstory #coffeetable"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 87, status: "Not Started", contentType: "Photo", goal: "Team love", idea: "Behind the counter: barista &amp; budtender chat", exampleText: "Buds behind Buds 👥", tags: "#crewvibes #budsteam"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 88, status: "Not Started", contentType: "Photo", goal: "Curiosity &amp; fun", idea: "Jar lid labeled 'do not touch'", exampleText: "Tempting, isn't it? 👀", tags: "#forbiddenbud #weedtease"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 89, status: "Not Started", contentType: "Photo", goal: "Interactive content", idea: "Table of rolling papers from around the world", exampleText: "Which one's your favorite?", tags: "#rollingstyles #globalweed"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 90, status: "Not Started", contentType: "Video", goal: "Mood / satisfaction", idea: "Slow zoom into someone exhaling", exampleText: "Let it all go... 💨", tags: "#exhale #zenvibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 91, status: "Not Started", contentType: "Photo", goal: "Location + aesthetic", idea: "Palm shadow on rolling tray", exampleText: "Thailand feels 🇹🇭", tags: "#tropicalweed #pattayastyle"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 92, status: "Not Started", contentType: "Photo", goal: "Social proof", idea: "Close-up on guest smiling with joint in mouth", exampleText: "This could be you 😏", tags: "#budsface #stonersmile"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 93, status: "Not Started", contentType: "Photo", goal: "Mood snapshot", idea: "Eyes closed, head leaned back in sun", exampleText: "High. Peace. Repeat. ☀️", tags: "#sunstoned #weedmoment"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 94, status: "Not Started", contentType: "Photo", goal: "Fun gesture", idea: "Two hands clinking grinders like glasses", exampleText: "Grind and shine 🥂", tags: "#stonercheers #weedritual"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 95, status: "Not Started", contentType: "Video", goal: "Visual/sound combo", idea: "Ice cubes melting in drink + chill beat", exampleText: "Stay cool 🧊", tags: "#icedvibes #coffeebeat"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 96, status: "Not Started", contentType: "Photo", goal: "Product diversity", idea: "Color gradient of different strains", exampleText: "Rainbow of highs 🌈", tags: "#straincolors #weedart"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 97, status: "Not Started", contentType: "Photo", goal: "Youth style", idea: "Sneakers with joint &amp; coffee on step", exampleText: "Step into Buds mode 👟", tags: "#streetweed #pattayavibes"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 98, status: "Not Started", contentType: "Photo", goal: "Tension shot", idea: "Close-up of thumb pressing lighter", exampleText: "The moment before 🔥", tags: "#jointstart #ignite"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 99, status: "Not Started", contentType: "Photo", goal: "Vintage aesthetic", idea: "Retro filter shot of Buds House", exampleText: "Back in time but high 💫", tags: "#retrostoner #budslook"},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{id: 100, status: "Not Started", contentType: "Photo", goal: "Daily recommendation", idea: "Strain label with 'mood of the day'", exampleText: "Feeling this today?", tags: "#weedmood #todaystrain"}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>]);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}, []);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const generateContentIdea = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setGeneratingContent(true);</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Filter ideas with "Not Started" status</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const notStartedIdeas = contentIdeasDB.filter(idea =&gt; idea.status === "Not Started");</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (notStartedIdeas.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setContentIdea({ exampleText: "All ideas are done! 🎉", idea: "Create new content ideas", tags: "#allcomplete" });</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setGeneratingContent(false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Select random idea</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const randomIdea = notStartedIdeas[Math.floor(Math.random() * notStartedIdeas.length)];</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Generate relevant hashtags and tip</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const relevantHashtags = generateRelevantHashtags(randomIdea.idea, randomIdea.goal, randomIdea.exampleText);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const implementationTip = generateImplementationTip(randomIdea.idea, randomIdea.contentType);</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Update the idea</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const ideaWithEnhancements = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>...randomIdea,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tags: relevantHashtags,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>implementationTip: implementationTip</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>setContentIdea(ideaWithEnhancements);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setGeneratingContent(false);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const markAsReady = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (contentIdea &amp;&amp; contentIdea.id) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setContentIdeasDB(prev =&gt; prev.map(idea =&gt;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>idea.id === contentIdea.id<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>? { ...idea, status: "Ready" }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>: idea</p>
+<p class="p1"><span class="Apple-converted-space">      </span>));</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert(language === 'en' ? 'Marked as Ready! ✅' : language === 'th' ? 'ทำเครื่องหมายเป็นพร้อมแล้ว! ✅' : 'Отмечено как готово! ✅');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, 100);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const markAsBullshit = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (contentIdea &amp;&amp; contentIdea.id) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setContentIdeasDB(prev =&gt; prev.map(idea =&gt;<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>idea.id === contentIdea.id<span class="Apple-converted-space"> </span></p>
+<p class="p1"><span class="Apple-converted-space">          </span>? { ...idea, status: "Bullshit" }</p>
+<p class="p1"><span class="Apple-converted-space">          </span>: idea</p>
+<p class="p1"><span class="Apple-converted-space">      </span>));</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>alert(language === 'en' ? 'Marked as Bullshit! 💩' : language === 'th' ? 'ทำเครื่องหมายเป็นเหลวไหล! 💩' : 'Отмечено как фигня! 💩');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}, 100);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>const handleAddStrain = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (!newStrain.name || !newStrain.price) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>alert(t.fillAllFields);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const strain = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>...newStrain,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>id: Date.now(),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>date: new Date().toLocaleDateString()</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>setStrains([...strains, strain]);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setNewStrain({ type: 'indica', name: '', price: '' });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setShowAddForm(false);</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>setTimeout(() =&gt; alert(t.strainAdded), 100);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>return (</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div className="min-h-screen bg-black text-white font-sans"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>{/* Header */}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="bg-white text-black p-6 text-center relative"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{/* Home/Refresh button on the left */}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="absolute top-4 left-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">            </span>onClick={() =&gt; window.location.reload()}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>className="p-2 rounded bg-gray-200 hover:bg-gray-300 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">            </span>title="Refresh Page"</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🏠</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div className="absolute top-4 right-4 flex items-center space-x-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">            </span>onClick={() =&gt; setLanguage('en')}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>className={`p-2 rounded ${language === 'en' ? 'bg-black text-white' : 'bg-gray-200'}`}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🇺🇸</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">            </span>onClick={() =&gt; setLanguage('th')}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>className={`p-2 rounded ${language === 'th' ? 'bg-black text-white' : 'bg-gray-200'}`}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🇹🇭</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">            </span>onClick={() =&gt; setLanguage('ru')}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>className={`p-2 rounded ${language === 'ru' ? 'bg-black text-white' : 'bg-gray-200'}`}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🇷🇺</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h1 className="text-4xl font-bold mb-2"&gt;{t.title}&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p className="text-xl text-gray-600"&gt;{t.subtitle}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>{/* Main Content */}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div className="p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{/* Main Menu */}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{!showAddForm &amp;&amp; !showQRCodes &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="space-y-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Content Generator */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-white text-black rounded-lg p-6 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                </span>onClick={generateContentIdea}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>disabled={generatingContent}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>className="w-full bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 text-white p-6 rounded-xl text-xl font-bold hover:from-purple-700 hover:via-pink-600 hover:to-orange-500 transition-all duration-300 disabled:opacity-50 flex items-center justify-center space-x-3 shadow-lg transform hover:scale-105 active:scale-95"</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;MessageCircle size={32} /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;{generatingContent ? t.generating : t.contentGenerator}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">              </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>{contentIdea &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="mt-4 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 p-1 rounded-2xl"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="bg-black rounded-2xl p-6 text-white text-center"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* Goal at the top */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="text-yellow-300 text-sm font-bold mb-2"&gt;🎯 {t.goal}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="text-lg font-bold text-white"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{translateContent(contentIdea.goal, language)}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* Idea description in the middle */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="text-blue-300 text-sm font-bold mb-2"&gt;💡 {t.idea}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="text-base text-gray-300 leading-relaxed mb-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{translateContent(contentIdea.idea, language)}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{/* Implementation tip */}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{contentIdea.implementationTip &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div className="text-xs text-gray-400 italic border-l-2 border-gray-600 pl-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>{translateContent(contentIdea.implementationTip, language)}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* Post text at the bottom */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="text-green-300 text-sm font-bold mb-2"&gt;📝 {t.postText}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="text-xl font-bold text-white mb-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{contentIdea.exampleText}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                      </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>{/* Tags */}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex flex-wrap gap-1 justify-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>{contentIdea.tags.split(' ').map((tag, index) =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>key={index}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>onClick={() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>navigator.clipboard.writeText(tag);</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>// Show brief visual feedback</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>const button = document.activeElement;</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>const originalText = button.textContent;</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>button.textContent = '✓';</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>button.style.backgroundColor = '#22c55e';</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>setTimeout(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>button.textContent = originalText;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>button.style.backgroundColor = '';</p>
+<p class="p1"><span class="Apple-converted-space">                              </span>}, 500);</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>}}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>className="bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded-full text-xs text-blue-300 hover:text-blue-200 transition-all cursor-pointer active:scale-95"</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>title={`Click to copy: ${tag}`}</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>{tag}</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>{/* Action Buttons */}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="space-y-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>onClick={() =&gt; navigator.clipboard.writeText(`${contentIdea.exampleText}\n\n${contentIdea.tags}`)}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-3 rounded-full text-sm font-bold hover:from-purple-600 hover:to-pink-600 transition-all"</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>📋 {t.copyPostText}</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">                      </span></p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex space-x-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>onClick={markAsReady}</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>className="flex-1 bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-3 rounded-full text-sm font-bold hover:from-green-700 hover:to-green-600 transition-all"</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>✅ {t.markAsReady}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>onClick={markAsBullshit}</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>className="flex-1 bg-gradient-to-r from-red-600 to-red-500 text-white px-4 py-3 rounded-full text-sm font-bold hover:from-red-700 hover:to-red-600 transition-all"</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                          </span>💩 {t.markAsBullshit}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Add New Weed */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-white text-black rounded-lg p-6 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                </span>onClick={() =&gt; setShowAddForm(true)}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg text-xl font-bold hover:from-green-600 hover:to-green-700 transition-colors flex items-center justify-center space-x-3"</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;Plus size={32} /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;{t.addNewWeed}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* QR Codes */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-white text-black rounded-lg p-6 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                </span>onClick={() =&gt; setShowQRCodes(true)}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>className="w-full bg-black text-white p-6 rounded-lg text-xl font-bold hover:bg-gray-800 transition-colors flex items-center justify-center space-x-3"</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;QrCode size={32} /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;span&gt;{t.showQRCodes}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>{/* Strains List */}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{strains.length &gt; 0 &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="bg-white text-black rounded-lg p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;h3 className="text-xl font-bold mb-4"&gt;Recent Strains:&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="space-y-3"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{strains.slice(-3).map(strain =&gt; (</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div key={strain.id} className="border-b pb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;div className="flex justify-between items-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span className="font-bold"&gt;{strain.name}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;span className="text-green-600"&gt;{strain.price} THB/g&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;span className="text-sm text-gray-600 capitalize"&gt;{strain.type}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>))}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>{/* Add Strain Form */}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{showAddForm &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="bg-white text-black rounded-lg p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h2 className="text-2xl font-bold mb-6 text-center"&gt;{t.addNewWeed}&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="space-y-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label className="block text-lg font-bold mb-2"&gt;{t.weedType}&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;select</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>value={newStrain.type}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>onChange={(e) =&gt; setNewStrain({...newStrain, type: e.target.value})}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>className="w-full p-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;option value="indica"&gt;{t.indica}&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;option value="sativa"&gt;{t.sativa}&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;option value="hybrid"&gt;{t.hybrid}&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/select&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label className="block text-lg font-bold mb-2"&gt;{t.strainName}&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>type="text"</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>value={newStrain.name}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>onChange={(e) =&gt; setNewStrain({...newStrain, name: e.target.value})}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>className="w-full p-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>placeholder="Enter strain name..."</p>
+<p class="p1"><span class="Apple-converted-space">                </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;label className="block text-lg font-bold mb-2"&gt;{t.pricePerGram}&lt;/label&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;input</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>type="number"</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>value={newStrain.price}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>onChange={(e) =&gt; setNewStrain({...newStrain, price: e.target.value})}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>className="w-full p-4 text-lg border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>placeholder="Enter price..."</p>
+<p class="p1"><span class="Apple-converted-space">                </span>/&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="flex space-x-4 pt-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>onClick={handleAddStrain}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>className="flex-1 bg-black text-white p-4 rounded-lg text-xl font-bold hover:bg-gray-800 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{t.save}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>onClick={() =&gt; setShowAddForm(false)}</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>className="flex-1 bg-gray-300 text-black p-4 rounded-lg text-xl font-bold hover:bg-gray-400 transition-colors"</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>{t.cancel}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>{/* QR Codes */}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>{showQRCodes &amp;&amp; (</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div className="space-y-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div className="bg-white text-black rounded-lg p-6 text-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;h2 className="text-2xl font-bold mb-6"&gt;{t.showQRCodes}&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">              </span></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;div className="space-y-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{/* Instagram QR */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="border rounded-lg p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="flex items-center justify-center space-x-3 mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;Instagram size={32} /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 className="text-xl font-bold"&gt;{t.instagram}&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="bg-gray-100 p-8 rounded-lg mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="w-32 h-32 bg-black mx-auto rounded-lg flex items-center justify-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;QrCode size={64} className="text-white" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;p className="text-sm text-gray-600"&gt;{t.followForFreeJoint}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>{/* Google Maps QR */}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div className="border rounded-lg p-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="flex items-center justify-center space-x-3 mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;MapPin size={32} /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h3 className="text-xl font-bold"&gt;{t.googleMaps}&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;div className="bg-gray-100 p-8 rounded-lg mb-4"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div className="w-32 h-32 bg-black mx-auto rounded-lg flex items-center justify-center"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                      </span>&lt;QrCode size={64} className="text-white" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                  </span>&lt;p className="text-sm text-gray-600"&gt;{t.reviewForFreeJoint}&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;button</p>
+<p class="p1"><span class="Apple-converted-space">                </span>onClick={() =&gt; setShowQRCodes(false)}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>className="w-full bg-black text-white p-4 rounded-lg text-xl font-bold hover:bg-gray-800 transition-colors mt-6"</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>{t.cancel}</p>
+<p class="p1"><span class="Apple-converted-space">              </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>)}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>);</p>
+<p class="p1">};</p>
+<p class="p2"><br></p>
+<p class="p1">export default BudsHelper;</p>
+</body>
+</html>
